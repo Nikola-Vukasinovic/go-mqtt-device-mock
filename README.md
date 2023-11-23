@@ -25,7 +25,7 @@ DEVICES_NUM
 SEND_PERIOD
 ```
 
-My example vars are:
+My example vars:
 
 env.sh
 
@@ -56,4 +56,43 @@ Another sidenote is that remember when using clusters on local development machi
 kubectl port-forward mqtt-broker-id port:port
 ```
 
-This will enable to forward traffic sent to ports 1883 or 8883 to be redirected to cluster port.
+This will enable to forward traffic sent to ports 1883 or 8883 to be redirected to cluster port. 
+
+## Running the example
+
+Since this is running example of simple app allow that certain module versions issues could arise so best practise would be to do:
+
+```
+go mod tidy
+```
+
+before 
+
+```
+go build .
+```
+
+Should the errors persist you can try to clean module cache:
+
+```
+go clean -modcache
+go clean -cache
+go clean -i
+```
+
+## **Simulated device data**
+
+Currently I'm simulating data that is being sent from Teltonika [TRB145](https://teltonika-networks.com/products/gateways/trb145) that is used as IoT gateway that reads over Modbus [RTU](https://www.modbustools.com/modbus.html) information from Power Quality Analyser. We one uses power quality analyser word it typicall referes to electrical values monitoring in order to detect anomalies and monitor electrical energy consumption and it's quality. Quality is usually checked vs some applied norm on the market like in the EU region EN 50160.
+
+Simulated incoming data from the devices has following fields in standard JSON format:
+
+| device_id | slave_id | measure_time | full_date | modbus_add | value | var_name |
+| --------- | -------- | ------------ | --------- | ---------- | ----- | -------- |
+
+With the amazing power of Go this is marshalled into [PQA_Message](https://github.com/Nikola-Vukasinovic/go-mqtt-device-mock/blob/main/mqtt.go).
+
+One can appricate the elegance of the Go in this area and one can easily expand this to more complex formats.
+
+### Planned works
+
+It is in plan to add more message formats for devices that are out in the market and being used in Industrial IoT projects.
